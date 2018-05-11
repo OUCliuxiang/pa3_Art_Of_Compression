@@ -2,6 +2,8 @@
 Just the class assignment of Wang's Data Structure.
 
 Some states should be pointed:
+
+
 0, completing percentage is 11/12, function "void twoDtree::prune();" is copied from
 
    https://github.com/marcusvandersande/Art-of-Compression/blob/master/twoDtree.cpp
