@@ -27,6 +27,8 @@ Some states should be pointed:
 Finally, thanks for your contribution of improving the algorithm!
 
 
-Upadte 2018-05-20
+-------------------------------------            Upadte 2018-05-20              ----------------------------------------
 
 Single dog single dog single all the day~~~  --> _-->
+
+Initialize the member varaibles height and width in function twoDtree( Contruction function ) in class twoDTree.
