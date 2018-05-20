@@ -75,6 +75,8 @@ twoDtree::twoDtree(PNG & imIn){
     pair< int, int>ul = make_pair( 0, 0 );
     //initializing stats using PNG is allowed. //
     stats s = stats( imIn );
+    height = imIn.height();
+    width = imIn.width();
     root = buildTree( s, ul, lr );
     // root = buildTree( stats( imIn ), ul, lr )
 }
