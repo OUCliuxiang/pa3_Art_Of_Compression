@@ -101,11 +101,11 @@ twoDtree::Node * twoDtree::buildTree(stats& s, pair<int,int> ul, pair<int,int> l
     
     pair< int, int> left_lr;
     pair< int, int> right_ul;
-    pair< int, int> smallest_left_lr;
-    pair< int, int> smallesr_right_ul;
+    pair< int, int> biggest_left_lr;
+    pair< int, int> biggest_right_ul;
     
-    //store the smallest varience
-    long double variance = 99999999;
+    //store the biggest varience
+    long double variance = 0;
 
     //to figure out x-axis firstly
     for( int i = left_ul.first; i < right_lr.first; ++ i ){
@@ -114,10 +114,10 @@ twoDtree::Node * twoDtree::buildTree(stats& s, pair<int,int> ul, pair<int,int> l
 
         long double left_variance = s.getScore( left_ul, left_lr );
         long double right_variance = s.getScore( right_ul, right_lr );
-        if( left_variance + right_variance < variance ){
+        if( left_variance + right_variance > variance ){
             variance = left_variance + right_variance;
-            smallest_left_lr = left_lr;
-            smallesr_right_ul = right_ul;
+            biggest_left_lr = left_lr;
+            biggest_right_ul = right_ul;
         }
     }
 
@@ -129,10 +129,10 @@ twoDtree::Node * twoDtree::buildTree(stats& s, pair<int,int> ul, pair<int,int> l
 
         long double left_variance = s.getScore( left_ul, left_lr );
         long double right_variance = s.getScore( right_ul, right_lr );
-        if( left_variance + right_variance < variance ){
+        if( left_variance + right_variance > variance ){
             variance = left_variance + right_variance;
-            smallest_left_lr = left_lr;
-            smallesr_right_ul = right_ul;
+            biggest_left_lr = left_lr;
+            biggest_right_ul = right_ul;
         }
     }
 
