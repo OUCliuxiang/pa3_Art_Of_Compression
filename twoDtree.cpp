@@ -75,8 +75,8 @@ twoDtree::twoDtree(PNG & imIn){
     pair< int, int>ul = make_pair( 0, 0 );
     //initializing stats using PNG is allowed. //
     stats s = stats( imIn );
-    height = imIn.height();
     width = imIn.width();
+    height = imIn.height();
     root = buildTree( s, ul, lr );
     // root = buildTree( stats( imIn ), ul, lr )
 }
@@ -104,7 +104,7 @@ twoDtree::Node * twoDtree::buildTree(stats& s, pair<int,int> ul, pair<int,int> l
     pair< int, int> biggest_left_lr;
     pair< int, int> biggest_right_ul;
     
-    //store the biggest varience
+    //store the smallest varience
     long double variance = 0;
 
     //to figure out x-axis firstly
@@ -138,8 +138,8 @@ twoDtree::Node * twoDtree::buildTree(stats& s, pair<int,int> ul, pair<int,int> l
 
     twoDtree::Node* node = new twoDtree::Node( ul, lr, s.getAvg( ul,lr ) );
     //recursion
-    node -> left = buildTree( s, left_ul, left_lr );
-    node -> right= buildTree( s, right_ul, right_lr );
+    node -> left = buildTree( s, left_ul, biggest_left_lr );
+    node -> right= buildTree( s, biggest_right_ul, right_lr );
     return node;
 }
 
