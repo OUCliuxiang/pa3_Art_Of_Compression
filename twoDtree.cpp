@@ -193,7 +193,8 @@ void twoDtree::pruneHelper(double pct, int tolerance, Node* n){
 	if(n->left == NULL && n->right == NULL)
 		return;
 
-    long total = ((n->lowRight.first + 1) - (n->upLeft.first)) * ((n->lowRight.second+1)-(n->upLeft.second));
+    long total = ((n->lowRight.first + 1) - (n -> upLeft.first)) *
+	    	 ((n->lowRight.second +1) - (n -> upLeft.second));
 	double count_ = count( root, root, tolerance );
     /*
     for ( int i = n -> upLeft.first; 
