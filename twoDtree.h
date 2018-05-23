@@ -100,15 +100,17 @@ public:
     * Every node's left and right children correspond to a partition
     * of the node's rectangle into two smaller rectangles. The node's
     * rectangle is split by the horizontal or vertical line that 
-    * results in the two mZ rectangles whose sum of squared 
+    * results in the two rectangles whose sum of squared 
     * differences from their mean is as small as possible.
     *
     * The left child of the node will contain the upper left corner
     * of the node's rectangle, and the right child will contain the
     * lower right corner.
     *
+    * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    * This function will build the stats object used to score the 
-   * splitting lines. It will also call helper function buildTree.
+   * splitting lines. It will also call !!!!<< helper>>!! function
+   * buildTree.
     */
    twoDtree(PNG & imIn);
 
@@ -137,7 +139,7 @@ public:
     */
    void prune(double pct, int tol);
    void pruneHelper( double, int, twoDtree::Node* );
-   double tolLeafCounter( Node*, Node*, int );
+   double count( Node*, Node*, int );
    /* =============== end of public PA3 FUNCTIONS =========================*/
 
 private:

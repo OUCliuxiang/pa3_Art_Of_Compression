@@ -75,8 +75,8 @@ twoDtree::twoDtree(PNG & imIn){
     pair< int, int>ul = make_pair( 0, 0 );
     //initializing stats using PNG is allowed. //
     stats s = stats( imIn );
-    width = imIn.width();
     height = imIn.height();
+    width = imIn.height();
     root = buildTree( s, ul, lr );
     // root = buildTree( stats( imIn ), ul, lr )
 }
@@ -101,11 +101,11 @@ twoDtree::Node * twoDtree::buildTree(stats& s, pair<int,int> ul, pair<int,int> l
     
     pair< int, int> left_lr;
     pair< int, int> right_ul;
-    pair< int, int> biggest_left_lr;
-    pair< int, int> biggest_right_ul;
+    pair< int, int> smallest_left_lr;
+    pair< int, int> smallesr_right_ul;
     
     //store the smallest varience
-    long double variance = 0;
+    long double variance = 99999999;
 
     //to figure out x-axis firstly
     for( int i = left_ul.first; i < right_lr.first; ++ i ){
@@ -114,10 +114,10 @@ twoDtree::Node * twoDtree::buildTree(stats& s, pair<int,int> ul, pair<int,int> l
 
         long double left_variance = s.getScore( left_ul, left_lr );
         long double right_variance = s.getScore( right_ul, right_lr );
-        if( left_variance + right_variance > variance ){
+        if( left_variance + right_variance < variance ){
             variance = left_variance + right_variance;
-            biggest_left_lr = left_lr;
-            biggest_right_ul = right_ul;
+            smallest_left_lr = left_lr;
+            smallesr_right_ul = right_ul;
         }
     }
 
@@ -129,17 +129,17 @@ twoDtree::Node * twoDtree::buildTree(stats& s, pair<int,int> ul, pair<int,int> l
 
         long double left_variance = s.getScore( left_ul, left_lr );
         long double right_variance = s.getScore( right_ul, right_lr );
-        if( left_variance + right_variance > variance ){
+        if( left_variance + right_variance < variance ){
             variance = left_variance + right_variance;
-            biggest_left_lr = left_lr;
-            biggest_right_ul = right_ul;
+            smallest_left_lr = left_lr;
+            smallesr_right_ul = right_ul;
         }
     }
 
     twoDtree::Node* node = new twoDtree::Node( ul, lr, s.getAvg( ul,lr ) );
     //recursion
-    node -> left = buildTree( s, left_ul, biggest_left_lr );
-    node -> right= buildTree( s, biggest_right_ul, right_lr );
+    node -> left = buildTree( s, left_ul, smallest_left_lr );
+    node -> right= buildTree( s, smallesr_right_ul, right_lr );
     return node;
 }
 
@@ -183,40 +183,28 @@ void twoDtree::renderRecur( PNG& pngObject, twoDtree::Node* nodeTemp ){
  * Maybe the recursion is the best way
  */
 
-/* Some difficulties:
- * 1, what's "tol"'s mean? total of pixel? Or total of subtrees?
- *    Or total of leaves? Or the others???
- *
- * !!!!!!!!!!!!!!!!!!!!!!! TRANSLATION !!!!!!!!!!!!!!!!!!!!!!!!!!!
- * 
- * 2, What's the translation of the sentence 
- * "A subtree is pruned if at least pct within tol of 
- * average color stored in the root of sbutree"?
- * 
- * !!!!!!!!!!!!!!!!!!!!!!! TRANSLATION !!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
-
-/* 说来惭愧，我用了一个星期的时间来琢磨这句话。
- * 试过了谷歌百度有道必应金山微软等等等等
- * 一切可以使用的翻译软件，至今不知道这句话要表达什么意思
- * 最终，为了避免因为这一个函数，使我曾做的所有努力前功尽弃
- * 我复制了github上的一份函数使用于此
- */
 void twoDtree::prune(double pct, int tol){
 	/* your code here */
-    twoDtree::Node* nodeTemp = root;
-    pruneHelper( pct, tol, nodeTemp );
+    //twoDtree::Node* nodeTemp = root;
+    pruneHelper( pct, tol, root );
 }
 
-void twoDtree::pruneHelper(double pct, int tol, Node* n){
+void twoDtree::pruneHelper(double pct, int tolerance, Node* n){
 	if(n->left == NULL && n->right == NULL)
 		return;
 
-    double total = ((n->lowRight.first + 1) - (n->upLeft.first)) * ((n->lowRight.second+1)-(n->upLeft.second));
-	double count =tolLeafCounter(n, n, tol);
-
-
-	if(count/total >= pct){
+    long total = ((n->lowRight.first + 1) - (n->upLeft.first)) * ((n->lowRight.second+1)-(n->upLeft.second));
+	double count_ = count( root, root, tolerance );
+    /*
+    for ( int i = n -> upLeft.first; 
+              i <= n -> lowRight.first;
+              i ++ )
+        for ( int j = n -> upLeft.second;
+                  j <= n -> lowRight.second; 
+                  j ++)
+            count += 
+    */
+	if(double(count_)/total >= pct){
 		clearRecur(n->left);
 		clearRecur(n->right);
 		n->left = NULL;
@@ -224,23 +212,22 @@ void twoDtree::pruneHelper(double pct, int tol, Node* n){
 		return;
 	}
 
-	pruneHelper(pct, tol, n->left);
-	pruneHelper(pct, tol, n->right);
+	pruneHelper(pct, tolerance, n->left);
+	pruneHelper(pct, tolerance, n->right);
 }
-
-
-double twoDtree::tolLeafCounter(Node* root, Node* n, int tol){
-	if(n == NULL)
-		return 0;
-	if(n->left == NULL && n->right == NULL){
-		int diff = 	pow(n->avg.g - root->avg.g, 2) +
-								pow(n->avg.r - root->avg.r, 2) +
-								pow(n->avg.b - root->avg.b, 2);
-		if(diff > tol)
-			return 0;
-		else return 1;
-		}
-		return tolLeafCounter(root, n->left, tol) + tolLeafCounter(root, n->right, tol);
+ 
+double twoDtree::count( Node* root, Node* curr, int tolerance ){
+    if( !curr )
+        return 0.0;
+    if( !curr -> left && !curr -> right ){
+        double variance = 
+            pow( root -> avg.r - curr -> avg.r, 2) + 
+            pow( root -> avg.g - curr -> avg.g, 2) +
+            pow( root -> avg.b - curr -> avg.b, 2 );
+        return variance <= tolerance ? 1 : 0;
+    }
+    return count( root, curr -> left, tolerance ) + 
+           count( root, curr -> right, tolerance );
 }
 
 void twoDtree::clear() {
